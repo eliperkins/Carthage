@@ -404,6 +404,7 @@ public func addSubmoduleToRepository(repositoryFileURL: NSURL, submodule: Submod
 				.then(launchGitTask([ "submodule", "--quiet", "sync" ], repositoryFileURL: repositoryFileURL))
 				.then(checkoutSubmodule(submodule, submoduleDirectoryURL))
 				.then(launchGitTask([ "add", "--force", submodule.path ], repositoryFileURL: repositoryFileURL))
+				.then(launchGitTask([ "sync", "--quiet" ], repositoryFileURL: repositoryFileURL))
 				.then(.empty())
 		} else {
 			let addSubmodule = launchGitTask([ "submodule", "--quiet", "add", "--force", "--name", submodule.name, "--", submodule.URL.URLString, submodule.path ], repositoryFileURL: repositoryFileURL)
@@ -418,6 +419,7 @@ public func addSubmoduleToRepository(repositoryFileURL: NSURL, submodule: Submod
 				.then(checkoutSubmodule(submodule, submoduleDirectoryURL))
 				.then(addSubmodule)
 				.then(launchGitTask([ "submodule", "--quiet", "init", "--", submodule.path ], repositoryFileURL: repositoryFileURL))
+				.then(launchGitTask([ "sync", "--quiet" ], repositoryFileURL: repositoryFileURL))
 				.then(.empty())
 		}
 	}
