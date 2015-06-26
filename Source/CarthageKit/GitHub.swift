@@ -106,8 +106,9 @@ public struct GitHubRepository: Equatable {
 		if let URL = NSURL(string: NWO) {
 			if let pathComponents = URL.pathComponents,
 				owner = pathComponents[0] as? String,
-				name = pathComponents[1] as? String {
-					return .success(self(owner: owner, name: name, server: GitHubServer.Enterprise(URL)))
+				name = pathComponents[1] as? String,
+				baseURL = URL.URLByDeletingPathExtension {
+					return .success(self(owner: owner, name: name, server: GitHubServer.Enterprise(baseURL)))
 			}
 			
 			return .failure(CarthageError.ParseError(description: "invalid GitHub Enterprise repository URL \"\(NWO)\""))
