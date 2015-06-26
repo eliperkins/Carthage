@@ -114,13 +114,19 @@ public struct GitHubRepository: Equatable {
 	
 	/// Parses repository information out of a string of the form "https://enterprise.local/owner/name".
 	public static func fromEnterpriseURL(URLString: String) -> Result<GitHubRepository, CarthageError> {
-		if let URL = NSURL(string: URLString) {
-			if let pathComponents = URL.pathComponents,
-				owner = pathComponents[0] as? String,
-				name = pathComponents[1] as? String,
-				baseURL = URL.URLByDeletingPathExtension {
-					return .success(self(owner: owner, name: name, server: GitHubServer.Enterprise(baseURL)))
-			}
+		if let URL = NSURL(string: URLString),
+			NWO = URL.path,
+			scheme = URL.scheme,
+			host = URL.host,
+			// Creating an NSURL with NSURL(scheme,host,path) here will cause the URL to have / appended to the end
+			// NSURL(string) here will give us as small of a URL as we need elsewhere
+			baseURL = NSURL(string: "\(scheme)://\(host)") {
+				let components = split(NWO, maxSplit: 1, allowEmptySlices: false) { $0 == "/" }
+				if components.count < 2 {
+					return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
+				}
+				
+				return .success(self(owner: components[0], name: components[1], server: GitHubServer.Enterprise(baseURL)))
 		}
 
 		return .failure(CarthageError.ParseError(description: "invalid GitHub Enterprise repository URL \"\(URLString)\""))
