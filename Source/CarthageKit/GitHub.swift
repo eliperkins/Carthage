@@ -131,7 +131,7 @@ public enum GitHubServer {
 	case DotCom
 	case Enterprise(NSURL)
 	
-	func webURL() -> String {
+	public func webURL() -> String {
 		switch self {
 		case .DotCom:
 			return DotComBaseWebURL
@@ -140,7 +140,7 @@ public enum GitHubServer {
 		}
 	}
 	
-	func baseHost() -> String {
+	public func baseHost() -> String {
 		switch self {
 		case .DotCom:
 			return DotComBaseWebHost
@@ -149,7 +149,7 @@ public enum GitHubServer {
 		}
 	}
 	
-	func APIURL() -> String {
+	public func APIURL() -> String {
 		switch self {
 		case .DotCom:
 			return DotComAPIEndpoint
