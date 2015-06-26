@@ -196,7 +196,12 @@ extension GitHubRepository: Hashable {
 
 extension GitHubRepository: Printable {
 	public var description: String {
-		return "\(owner)/\(name)"
+		switch server {
+		case .DotCom:
+			return "\(owner)/\(name)"
+		case .Enterprise:
+			return "\(server.webURL())/\(owner)/\(name)"
+		}
 	}
 }
 
