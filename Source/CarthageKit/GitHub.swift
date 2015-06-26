@@ -73,7 +73,7 @@ extension GitHubError: Decodable {
 public struct GitHubRepository: Equatable {
 	public let owner: String
 	public let name: String
-	public let server = GitHubServer.DotCom
+	public let server: GitHubServer
 
 	/// The URL that should be used for cloning this repository over HTTPS.
 	public var HTTPSURL: GitURL {
@@ -90,19 +90,30 @@ public struct GitHubRepository: Equatable {
 		return NSURL(string: "\(server.webURL())/\(owner)/\(name)/issues/new")!
 	}
 
-	public init(owner: String, name: String) {
+	public init(owner: String, name: String, server: GitHubServer = .DotCom) {
 		self.owner = owner
 		self.name = name
+		self.server = server
 	}
 
-	/// Parses repository information out of a string of the form "owner/name".
+	/// Parses repository information out of a string of the form "owner/name" or "https://enterprise.local/owner/name".
 	public static func fromNWO(NWO: String) -> Result<GitHubRepository, CarthageError> {
 		let components = split(NWO, maxSplit: 1, allowEmptySlices: false) { $0 == "/" }
-		if components.count < 2 {
-			return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
+		if components.count == 2 {
+			return .success(self(owner: components[0], name: components[1]))
 		}
-
-		return .success(self(owner: components[0], name: components[1]))
+		
+		if let URL = NSURL(string: NWO) {
+			if let pathComponents = URL.pathComponents,
+				owner = pathComponents[0] as? String,
+				name = pathComponents[1] as? String {
+					return .success(self(owner: owner, name: name, server: GitHubServer.Enterprise(URL)))
+			} else {
+				return .failure(CarthageError.ParseError(description: "invalid GitHub Enterprise repository URL \"\(NWO)\""))
+			}
+		}
+		
+		return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
 	}
 }
 
