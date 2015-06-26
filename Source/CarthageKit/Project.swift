@@ -307,7 +307,7 @@ public final class Project {
 
 				switch project {
 				case let .GitHub(repository):
-					return GitHubCredentials.loadFromGit()
+					return GitHubCredentials.loadFromGit(repository)
 						|> flatMap(.Concat) { credentials in
 							return self.downloadMatchingBinariesForProject(project, atRevision: revision, fromRepository: repository, withCredentials: credentials)
 								|> catch { error in

@@ -268,8 +268,8 @@ internal struct GitHubCredentials {
 	}
 
 	/// Attempts to load credentials from the Git credential store.
-	static func loadFromGit() -> SignalProducer<GitHubCredentials?, CarthageError> {
-		let data = "url=https://github.com".dataUsingEncoding(NSUTF8StringEncoding)!
+	static func loadFromGit(repository: GitHubRepository) -> SignalProducer<GitHubCredentials?, CarthageError> {
+		let data = "url=\(repository.server.webURL())".dataUsingEncoding(NSUTF8StringEncoding)!
 		
 		var environment = NSProcessInfo.processInfo().environment as! [String: String]
 		environment["GIT_TERMINAL_PROMPT"] = "0"
