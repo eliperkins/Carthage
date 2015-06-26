@@ -108,9 +108,9 @@ public struct GitHubRepository: Equatable {
 				owner = pathComponents[0] as? String,
 				name = pathComponents[1] as? String {
 					return .success(self(owner: owner, name: name, server: GitHubServer.Enterprise(URL)))
-			} else {
-				return .failure(CarthageError.ParseError(description: "invalid GitHub Enterprise repository URL \"\(NWO)\""))
 			}
+			
+			return .failure(CarthageError.ParseError(description: "invalid GitHub Enterprise repository URL \"\(NWO)\""))
 		}
 		
 		return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
