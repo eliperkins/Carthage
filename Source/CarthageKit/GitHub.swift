@@ -104,8 +104,8 @@ public struct GitHubRepository: Equatable {
 	
 	/// Parses repository information out of a string of the form "owner/name".
 	public static func fromNWO(NWO: String) -> Result<GitHubRepository, CarthageError> {
-		let components = split(NWO, maxSplit: 1, allowEmptySlices: false) { $0 == "/" }
-		if components.count < 2 {
+		let components = split(NWO, maxSplit: 3, allowEmptySlices: false) { $0 == "/" }
+		if components.count != 2 {
 			return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
 		}
 		
