@@ -96,25 +96,34 @@ public struct GitHubRepository: Equatable {
 		self.server = server
 	}
 
-	/// Parses repository information out of a string of the form "owner/name" or "https://enterprise.local/owner/name".
+	public static func fromString(string: String) -> Result<GitHubRepository, CarthageError> {
+		return fromNWO(string)
+			?? fromEnterpriseURL(string)
+			?? .failure(CarthageError.ParseError(description: "invalid GitHub repository declaration \"\(string)\""))
+	}
+	
+	/// Parses repository information out of a string of the form "owner/name".
 	public static func fromNWO(NWO: String) -> Result<GitHubRepository, CarthageError> {
 		let components = split(NWO, maxSplit: 1, allowEmptySlices: false) { $0 == "/" }
-		if components.count == 2 {
-			return .success(self(owner: components[0], name: components[1]))
+		if components.count < 2 {
+			return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
 		}
 		
-		if let URL = NSURL(string: NWO) {
+		return .success(self(owner: components[0], name: components[1]))
+	}
+	
+	/// Parses repository information out of a string of the form "https://enterprise.local/owner/name".
+	public static func fromEnterpriseURL(URLString: String) -> Result<GitHubRepository, CarthageError> {
+		if let URL = NSURL(string: URLString) {
 			if let pathComponents = URL.pathComponents,
 				owner = pathComponents[0] as? String,
 				name = pathComponents[1] as? String,
 				baseURL = URL.URLByDeletingPathExtension {
 					return .success(self(owner: owner, name: name, server: GitHubServer.Enterprise(baseURL)))
 			}
-			
-			return .failure(CarthageError.ParseError(description: "invalid GitHub Enterprise repository URL \"\(NWO)\""))
 		}
-		
-		return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
+
+		return .failure(CarthageError.ParseError(description: "invalid GitHub Enterprise repository URL \"\(URLString)\""))
 	}
 }
 
