@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		14A7BF4C1AA811D800C70ABB /* Cartfile in Copy Bundle Resources/DuplicateDependencies */ = {isa = PBXBuildFile; fileRef = 14A7BF471AA810B200C70ABB /* Cartfile */; };
 		14A7BF4D1AA811E600C70ABB /* Cartfile.private in Copy Bundle Resources/DuplicateDependencies */ = {isa = PBXBuildFile; fileRef = 14A7BF481AA810B200C70ABB /* Cartfile.private */; };
+		268E0DFD1B3DB0020006EC63 /* GitHubSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268E0DFB1B3DA5520006EC63 /* GitHubSpec.swift */; };
 		5482DAF11A3849D700197FB8 /* CopyFrameworks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5482DAF01A3849D700197FB8 /* CopyFrameworks.swift */; };
 		54911EF31A1D34EC00FFAE5F /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54911EF21A1D34EC00FFAE5F /* Version.swift */; };
 		549B47B11A4F1A34002498C7 /* ProjectSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549B47AF1A4F17FF002498C7 /* ProjectSpec.swift */; };
@@ -133,6 +134,7 @@
 /* Begin PBXFileReference section */
 		14A7BF471AA810B200C70ABB /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Cartfile; path = DuplicateDependencies/Cartfile; sourceTree = "<group>"; };
 		14A7BF481AA810B200C70ABB /* Cartfile.private */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Cartfile.private; path = DuplicateDependencies/Cartfile.private; sourceTree = "<group>"; };
+		268E0DFB1B3DA5520006EC63 /* GitHubSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitHubSpec.swift; sourceTree = "<group>"; };
 		5482DAF01A3849D700197FB8 /* CopyFrameworks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyFrameworks.swift; sourceTree = "<group>"; };
 		54911EF21A1D34EC00FFAE5F /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 			children = (
 				D0C6E5731A57040B00A5E3E7 /* ArchiveSpec.swift */,
 				D0D121DF19E8999E005E4BAA /* CartfileSpec.swift */,
+				268E0DFB1B3DA5520006EC63 /* GitHubSpec.swift */,
 				549B47AF1A4F17FF002498C7 /* ProjectSpec.swift */,
 				D01D82DC1A10B01D00F0DD94 /* ResolverSpec.swift */,
 				D0DE89411A0F2D450030A3EC /* VersionSpec.swift */,
@@ -665,6 +668,7 @@
 				D0DE89421A0F2D450030A3EC /* VersionSpec.swift in Sources */,
 				D0DB09A419EA354200234B16 /* XcodeSpec.swift in Sources */,
 				D0C6E5741A57040B00A5E3E7 /* ArchiveSpec.swift in Sources */,
+				268E0DFD1B3DB0020006EC63 /* GitHubSpec.swift in Sources */,
 				549B47B11A4F1A34002498C7 /* ProjectSpec.swift in Sources */,
 				D01D82DD1A10B01D00F0DD94 /* ResolverSpec.swift in Sources */,
 			);
