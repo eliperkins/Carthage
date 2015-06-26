@@ -159,6 +159,12 @@ public enum GitHubServer: Equatable {
 	}
 }
 
+extension GitHubServer: Printable {
+	public var description: String {
+		return webURL()
+	}
+}
+
 public func ==(lhs: GitHubServer, rhs: GitHubServer) -> Bool {
 	switch (lhs, rhs) {
 	case let (.DotCom, .DotCom):
