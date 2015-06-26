@@ -32,6 +32,11 @@ private let APIContentType = "application/vnd.github.v3+json"
 /// from releases.
 private let APIAssetDownloadContentType = "application/octet-stream"
 
+private let DotComAPIEndpoint = "https://api.github.com"
+private let DotComBaseWebURL = "https://github.com"
+private let DotComBaseWebHost = "github.com"
+private let EnterpriseAPIEndpointPathComponent = "api/v3"
+
 /// Represents an error returned from the GitHub API.
 public struct GitHubError: Equatable {
 	public let message: String
@@ -68,20 +73,21 @@ extension GitHubError: Decodable {
 public struct GitHubRepository: Equatable {
 	public let owner: String
 	public let name: String
+	public let server = GitHubServer.DotCom
 
 	/// The URL that should be used for cloning this repository over HTTPS.
 	public var HTTPSURL: GitURL {
-		return GitURL("https://github.com/\(owner)/\(name).git")
+		return GitURL("\(server.webURL())/\(owner)/\(name).git")
 	}
 
 	/// The URL that should be used for cloning this repository over SSH.
 	public var SSHURL: GitURL {
-		return GitURL("ssh://git@github.com/\(owner)/\(name).git")
+		return GitURL("ssh://git@\(server.baseHost())/\(owner)/\(name).git")
 	}
 
 	/// The URL for filing a new GitHub issue for this repository.
 	public var newIssueURL: NSURL {
-		return NSURL(string: "https://github.com/\(owner)/\(name)/issues/new")!
+		return NSURL(string: "\(server.webURL())/\(owner)/\(name)/issues/new")!
 	}
 
 	public init(owner: String, name: String) {
@@ -97,6 +103,38 @@ public struct GitHubRepository: Equatable {
 		}
 
 		return .success(self(owner: components[0], name: components[1]))
+	}
+}
+
+public enum GitHubServer {
+	case DotCom
+	case Enterprise(NSURL)
+	
+	func webURL() -> String {
+		switch self {
+		case .DotCom:
+			return DotComBaseWebURL
+		case .Enterprise(let URL):
+			return URL.absoluteString ?? ""
+		}
+	}
+	
+	func baseHost() -> String {
+		switch self {
+		case .DotCom:
+			return DotComBaseWebHost
+		case .Enterprise(let URL):
+			return URL.host ?? ""
+		}
+	}
+	
+	func APIURL() -> String {
+		switch self {
+		case .DotCom:
+			return DotComAPIEndpoint
+		case .Enterprise(let URL):
+			return URL.URLByAppendingPathComponent(EnterpriseAPIEndpointPathComponent, isDirectory: true).absoluteString ?? ""
+		}
 	}
 }
 
@@ -361,7 +399,7 @@ private func fetchAllPages(URL: NSURL, credentials: GitHubCredentials?) -> Signa
 /// sending it along the returned signal. If no release matches, the signal will
 /// complete without sending any values.
 internal func releaseForTag(tag: String, repository: GitHubRepository, credentials: GitHubCredentials?) -> SignalProducer<GitHubRelease, CarthageError> {
-	return fetchAllPages(NSURL(string: "https://api.github.com/repos/\(repository.owner)/\(repository.name)/releases/tags/\(tag)")!, credentials)
+	return fetchAllPages(NSURL(string: "\(repository.server.APIURL())/repos/\(repository.owner)/\(repository.name)/releases/tags/\(tag)")!, credentials)
 		|> tryMap { data -> Result<AnyObject, CarthageError> in
 			if let object: AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil) {
 				return .success(object)
