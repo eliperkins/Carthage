@@ -127,7 +127,7 @@ public struct GitHubRepository: Equatable {
 	}
 }
 
-public enum GitHubServer {
+public enum GitHubServer: Equatable {
 	case DotCom
 	case Enterprise(NSURL)
 	
@@ -156,6 +156,19 @@ public enum GitHubServer {
 		case .Enterprise(let URL):
 			return URL.URLByAppendingPathComponent(EnterpriseAPIEndpointPathComponent, isDirectory: true).absoluteString ?? ""
 		}
+	}
+}
+
+public func ==(lhs: GitHubServer, rhs: GitHubServer) -> Bool {
+	switch (lhs, rhs) {
+	case let (.DotCom, .DotCom):
+		return true
+		
+	case let (.Enterprise(left), .Enterprise(right)):
+		return left == right
+		
+	default:
+		return false
 	}
 }
 
