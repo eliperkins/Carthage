@@ -118,9 +118,7 @@ public struct GitHubRepository: Equatable {
 			NWO = URL.path,
 			scheme = URL.scheme,
 			host = URL.host,
-			// Creating an NSURL with NSURL(scheme,host,path) here will cause the URL to have / appended to the end
-			// NSURL(string) here will give us as small of a URL as we need elsewhere
-			baseURL = NSURL(string: "\(scheme)://\(host)") {
+			baseURL = NSURL(scheme: scheme, host: host, path: "/").carthage_URLByRemovingTrailingSlash {
 				let components = split(NWO, maxSplit: 1, allowEmptySlices: false) { $0 == "/" }
 				if components.count < 2 {
 					return .failure(CarthageError.ParseError(description: "invalid GitHub repository name \"\(NWO)\""))
@@ -160,7 +158,8 @@ public enum GitHubServer: Equatable {
 		case .DotCom:
 			return DotComAPIEndpoint
 		case .Enterprise(let URL):
-			return URL.URLByAppendingPathComponent(EnterpriseAPIEndpointPathComponent, isDirectory: true).absoluteString ?? ""
+			let URL = URL.URLByAppendingPathComponent(EnterpriseAPIEndpointPathComponent, isDirectory: true)
+			return URL.carthage_URLByRemovingTrailingSlash.absoluteString ?? ""
 		}
 	}
 }

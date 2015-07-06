@@ -262,3 +262,22 @@ internal func buildCountedSet<S: SequenceType>(sequence: S) -> [S.Generator.Elem
 		return set
 	}
 }
+
+extension NSURL {
+	var carthage_hasTrailingSlash: Bool {
+		return absoluteString?.hasSuffix("/") ?? false
+	}
+	
+	var carthage_URLByRemovingTrailingSlash: NSURL {
+		if carthage_hasTrailingSlash {
+			if let absoluteString = absoluteString {
+				let str: NSString = absoluteString
+				if let URL = NSURL(string: str.substringToIndex(str.length - 1)) {
+					return URL
+				}
+			}
+		}
+		
+		return self
+	}
+}
